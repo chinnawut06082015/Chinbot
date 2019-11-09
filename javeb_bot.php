@@ -15,9 +15,9 @@ if ( sizeof($request_array['events']) > 0 )
   $reply_message = '';
   $reply_token = $event['replyToken'];
   
-  if( $event['message']['text'] == 'Tel_BR' )
+  if( $event['message']['text'] == 'เบอร์ติดต่อแต่ละสาขา' )
   {
-	  $reply_message = 'สาขาปากเกร็ด 5533 /n สาขแจ้งวัฒนะ 2533';
+	  $reply_message = 'สาขาปากเกร็ด 5533 /r\n สาขแจ้งวัฒนะ 2533 /r\n สาขาบางกอกน้อย 4533 /r\n สาขาหนองแขม 3533 ';
   }
 
   /*if ( $event['type'] == 'message' ) 
