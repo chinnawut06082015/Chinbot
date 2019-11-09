@@ -17,7 +17,18 @@ if ( sizeof($request_array['events']) > 0 )
   
   if( $event['message']['text'] == 'เบอร์ติดต่อแต่ละสาขา' )
   {
-	  $reply_message = 'สาขาปากเกร็ด 5533 ';
+	  $textReplyMessage = new BubbleContainerBuilder(
+    "ltr",NULL,NULL,
+    new BoxComponentBuilder(
+        "vertical",
+        array(
+            new TextComponentBuilder("hello"),
+            new TextComponentBuilder("world")
+        )
+    )
+);
+$replyData = new FlexMessageBuilder("This is a Flex Message",$textReplyMessage);
+	  //$reply_message = 'สาขาปากเกร็ด 5533 ';
   }
 
   /*if ( $event['type'] == 'message' ) 
