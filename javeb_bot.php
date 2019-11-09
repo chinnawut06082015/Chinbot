@@ -14,8 +14,13 @@ if ( sizeof($request_array['events']) > 0 )
  {
   $reply_message = '';
   $reply_token = $event['replyToken'];
+  
+  if( $event['message']['text'] == 'Tel_BR' )
+  {
+	  $reply_message = 'สาขาปากเกร็ด 5533 /n สาขแจ้งวัฒนะ 2533';
+  }
 
-  if ( $event['type'] == 'message' ) 
+  /*if ( $event['type'] == 'message' ) 
   {
    if( $event['message']['type'] == 'text' )
    {
@@ -27,7 +32,7 @@ if ( sizeof($request_array['events']) > 0 )
   
   }
   else
-   $reply_message = 'ระบบได้รับ Event '.ucfirst($event['type']).' ของคุณแล้ว';
+   $reply_message = 'ระบบได้รับ Event '.ucfirst($event['type']).' ของคุณแล้ว';*/
  
   if( strlen($reply_message) > 0 )
   {
