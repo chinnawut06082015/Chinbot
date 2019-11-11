@@ -26,77 +26,79 @@
 $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient('PK22vMsinZQh0VWpwVlHnXCXiHfDoA+oGk1d0eaOaIRtPf6mEIDvRVprJ0e7o06eKjqa2B3TONZ9CkOP2og96CHl1v21hcmoB5mwZm1umzoHRy0zkyFPEC3kkwKXuO9IECWdEc0zz/3GMcoExpVy9gdB04t89/1O/w1cDnyilFU=');
 $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => '3ac88d67a3c8f207a35717e4537f6f58']);*/
 
-$strAccessToken  = 'PK22vMsinZQh0VWpwVlHnXCXiHfDoA+oGk1d0eaOaIRtPf6mEIDvRVprJ0e7o06eKjqa2B3TONZ9CkOP2og96CHl1v21hcmoB5mwZm1umzoHRy0zkyFPEC3kkwKXuO9IECWdEc0zz/3GMcoExpVy9gdB04t89/1O/w1cDnyilFU=';
+// กรณีต้องการตรวจสอบการแจ้ง error ให้เปิด 3 บรรทัดล่างนี้ให้ทำงาน กรณีไม่ ให้ comment ปิดไป
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+ 
+// include composer autoload
+require_once '../vendor/autoload.php';
+ 
+// การตั้งเกี่ยวกับ bot
+require_once 'bot_settings.php';
+ 
+// กรณีมีการเชื่อมต่อกับฐานข้อมูล
+//require_once("dbconnect.php");
+ 
+///////////// ส่วนของการเรียกใช้งาน class ผ่าน namespace
+use LINE\LINEBot;
+use LINE\LINEBot\HTTPClient;
+use LINE\LINEBot\HTTPClient\CurlHTTPClient;
+//use LINE\LINEBot\Event;
+//use LINE\LINEBot\Event\BaseEvent;
+//use LINE\LINEBot\Event\MessageEvent;
+use LINE\LINEBot\MessageBuilder;
+use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
+use LINE\LINEBot\MessageBuilder\StickerMessageBuilder;
+use LINE\LINEBot\MessageBuilder\ImageMessageBuilder;
+use LINE\LINEBot\MessageBuilder\LocationMessageBuilder;
+use LINE\LINEBot\MessageBuilder\AudioMessageBuilder;
+use LINE\LINEBot\MessageBuilder\VideoMessageBuilder;
+use LINE\LINEBot\ImagemapActionBuilder;
+use LINE\LINEBot\ImagemapActionBuilder\AreaBuilder;
+use LINE\LINEBot\ImagemapActionBuilder\ImagemapMessageActionBuilder ;
+use LINE\LINEBot\ImagemapActionBuilder\ImagemapUriActionBuilder;
+use LINE\LINEBot\MessageBuilder\Imagemap\BaseSizeBuilder;
+use LINE\LINEBot\MessageBuilder\ImagemapMessageBuilder;
+use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
+use LINE\LINEBot\TemplateActionBuilder;
+use LINE\LINEBot\TemplateActionBuilder\DatetimePickerTemplateActionBuilder;
+use LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder;
+use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
+use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ButtonTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselColumnTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ImageCarouselTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ImageCarouselColumnTemplateBuilder;
+ 
+// เชื่อมต่อกับ LINE Messaging API
+$httpClient = new CurlHTTPClient('PK22vMsinZQh0VWpwVlHnXCXiHfDoA+oGk1d0eaOaIRtPf6mEIDvRVprJ0e7o06eKjqa2B3TONZ9CkOP2og96CHl1v21hcmoB5mwZm1umzoHRy0zkyFPEC3kkwKXuO9IECWdEc0zz/3GMcoExpVy9gdB04t89/1O/w1cDnyilFU=');
+$bot = new LINEBot($httpClient, array('channelSecret' => '3ac88d67a3c8f207a35717e4537f6f58'));
+ 
+// คำสั่งรอรับการส่งค่ามาของ LINE Messaging API
 $content = file_get_contents('php://input');
-$arrJson = json_decode($content, true);
  
-$strUrl = "https://api.line.me/v2/bot/message/reply";
+// แปลงข้อความรูปแบบ JSON  ให้อยู่ในโครงสร้างตัวแปร array
+$events = json_decode($content, true);
+if(!is_null($events)){
+    // ถ้ามีค่า สร้างตัวแปรเก็บ replyToken ไว้ใช้งาน
+    $replyToken = $events['events'][0]['replyToken'];
+}
+// ส่วนของคำสั่งจัดเตียมรูปแบบข้อความสำหรับส่ง
+$textMessageBuilder = new TextMessageBuilder(json_encode($events));
  
-$arrHeader = array();
-$arrHeader[] = "Content-Type: application/json";
-$arrHeader[] = "Authorization: Bearer {$strAccessToken}";
-$_msg = $arrJson['events'][0]['message']['text'];
- 
- 
-$api_key="<MLAB APIKEY>";
-$url = 'https://api.mlab.com/api/1/databases/duckduck/collections/linebot?apiKey='.$api_key.'';
-$json = file_get_contents('https://api.mlab.com/api/1/databases/duckduck/collections/linebot?apiKey='.$api_key.'&q={"question":"'.$_msg.'"}');
-$data = json_decode($json);
-$isData=sizeof($data);
- 
-if (strpos($_msg, 'สอนเป็ด') !== false) {
-  if (strpos($_msg, 'สอนเป็ด') !== false) {
-    $x_tra = str_replace("สอนเป็ด","", $_msg);
-    $pieces = explode("|", $x_tra);
-    $_question=str_replace("[","",$pieces[0]);
-    $_answer=str_replace("]","",$pieces[1]);
-    //Post New Data
-    $newData = json_encode(
-      array(
-        'question' => $_question,
-        'answer'=> $_answer
-      )
-    );
-    $opts = array(
-      'http' => array(
-          'method' => "POST",
-          'header' => "Content-type: application/json",
-          'content' => $newData
-       )
-    );
-    $context = stream_context_create($opts);
-    $returnValue = file_get_contents($url,false,$context);
-    $arrPostData = array();
-    $arrPostData['replyToken'] = $arrJson['events'][0]['replyToken'];
-    $arrPostData['messages'][0]['type'] = "text";
-    $arrPostData['messages'][0]['text'] = 'ขอบคุณที่สอนเป็ด';
-  }
-}else{
-  if($isData >0){
-   foreach($data as $rec){
-    $arrPostData = array();
-    $arrPostData['replyToken'] = $arrJson['events'][0]['replyToken'];
-    $arrPostData['messages'][0]['type'] = "text";
-    $arrPostData['messages'][0]['text'] = $rec->answer;
-   }
-  }else{
-    $arrPostData = array();
-    $arrPostData['replyToken'] = $arrJson['events'][0]['replyToken'];
-    $arrPostData['messages'][0]['type'] = "text";
-    $arrPostData['messages'][0]['text'] = 'ก๊าบบ คุณสามารถสอนให้ฉลาดได้เพียงพิมพ์: สอนเป็ด[คำถาม|คำตอบ]';
-  }
+//l ส่วนของคำสั่งตอบกลับข้อความ
+$response = $bot->replyMessage($replyToken,$textMessageBuilder);
+if ($response->isSucceeded()) {
+    echo 'Succeeded!';
+    return;
 }
  
- 
-$channel = curl_init();
-curl_setopt($channel, CURLOPT_URL,$strUrl);
-curl_setopt($channel, CURLOPT_HEADER, false);
-curl_setopt($channel, CURLOPT_POST, true);
-curl_setopt($channel, CURLOPT_HTTPHEADER, $arrHeader);
-curl_setopt($channel, CURLOPT_POSTFIELDS, json_encode($arrPostData));
-curl_setopt($channel, CURLOPT_RETURNTRANSFER,true);
-curl_setopt($channel, CURLOPT_SSL_VERIFYPEER, false);
-$result = curl_exec($channel);
-curl_close ($channel);
+// Failed
+echo $response->getHTTPStatus() . ' ' . $response->getRawBody();
 
 ?>
