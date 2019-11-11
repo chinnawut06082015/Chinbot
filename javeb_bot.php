@@ -19,7 +19,10 @@ if ( sizeof($request_array['events']) > 0 )
   {
 	  $reply_message = 'สาขาปากเกร็ด 5533'."\n"."สาขาแจ้งวัฒนะ 2533"."\n"."สาขาบางกอกน้อย 4533"."\n"."สาขาหนองแขม 3533";
   }
+  if($event['message']['text'] == 'ปัญหาระบบคอมพิวเตอร์')
+  {
 
+  }
   /*if ( $event['type'] == 'message' ) 
   {
    if( $event['message']['type'] == 'text' )
