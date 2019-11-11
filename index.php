@@ -21,22 +21,17 @@
 	</body>
 </html>
 <?php
-require 'vendor/autoload.php';
+$path = __DIR__ . '/vendor/autoload.php';
+require_once $path;
+
 
 $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient('PK22vMsinZQh0VWpwVlHnXCXiHfDoA+oGk1d0eaOaIRtPf6mEIDvRVprJ0e7o06eKjqa2B3TONZ9CkOP2og96CHl1v21hcmoB5mwZm1umzoHRy0zkyFPEC3kkwKXuO9IECWdEc0zz/3GMcoExpVy9gdB04t89/1O/w1cDnyilFU=');
 $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => '3ac88d67a3c8f207a35717e4537f6f58']);
 
-foreach ($data['events'] as $event)
- {
-  $userMessage = $event['message']['text'];
-  if(strtolower($userMessage) == 'halo')
-  {
-   $message = "Halo juga";
-    $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($message);
-   $result = $bot->replyMessage($event['replyToken'], $textMessageBuilder);
-   return $result->getHTTPStatus() . ' ' . $result->getRawBody();
-  
-  }
- }
+
+$textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder('hello');
+$response = $bot->pushMessage('<to>', $textMessageBuilder);
+
+echo $response->getHTTPStatus() . ' ' . $response->getRawBody();
 
 ?>
