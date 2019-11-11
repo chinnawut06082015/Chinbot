@@ -1,31 +1,57 @@
 <?php
-require_once '../vendor/autoload.php';
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\FirePHPHandler;
 
-$API_URL = 'https://api.line.me/v2/bot/message/reply';
-$ACCESS_TOKEN = 'PK22vMsinZQh0VWpwVlHnXCXiHfDoA+oGk1d0eaOaIRtPf6mEIDvRVprJ0e7o06eKjqa2B3TONZ9CkOP2og96CHl1v21hcmoB5mwZm1umzoHRy0zkyFPEC3kkwKXuO9IECWdEc0zz/3GMcoExpVy9gdB04t89/1O/w1cDnyilFU='; // Access Token ค่าที่เราสร้างขึ้น
-$POST_HEADER = array('Content-Type: application/json', 'Authorization: Bearer ' . $ACCESS_TOKEN);
+$logger = new Logger('LineBot');
+$logger->pushHandler(new StreamHandler('php://stderr', Logger::DEBUG));
 
-$request = file_get_contents('php://input');   // Get request content
-$request_array = json_decode($request, true);   // Decode JSON to Array
+$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($_ENV["LINEBOT_ACCESS_TOKEN"]);
+$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $_ENV["LINEBOT_CHANNEL_SECRET"]]);
 
-if ( sizeof($request_array['events']) > 0 )
-{
+$signature = $_SERVER['HTTP_' . \LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
+try {
+	$events = $bot->parseEventRequest(file_get_contents('php://input'), $signature);
+} catch(\LINE\LINEBot\Exception\InvalidSignatureException $e) {
+	error_log('parseEventRequest failed. InvalidSignatureException => '.var_export($e, true));
+} catch(\LINE\LINEBot\Exception\UnknownEventTypeException $e) {
+	error_log('parseEventRequest failed. UnknownEventTypeException => '.var_export($e, true));
+} catch(\LINE\LINEBot\Exception\UnknownMessageTypeException $e) {
+	error_log('parseEventRequest failed. UnknownMessageTypeException => '.var_export($e, true));
+} catch(\LINE\LINEBot\Exception\InvalidEventRequestException $e) {
+	error_log('parseEventRequest failed. InvalidEventRequestException => '.var_export($e, true));
+}
 
- foreach ($request_array['events'] as $event)
- {
-  $reply_message = '';
-  $reply_token = $event['replyToken'];
-  
+	// Postback Event
+	if (($event instanceof \LINE\LINEBot\Event\PostbackEvent)) {
+		$logger->info('Postback message has come');
+		continue;
+	}
+	// Location Event
+	if  ($event instanceof LINE\LINEBot\Event\MessageEvent\LocationMessage) {
+		$logger->info("location -> ".$event->getLatitude().",".$event->getLongitude());
+		continue;
+	}
+
   if($event['message']['text'] == 'เบอร์ติดต่อแต่ละสาขา' )
   {
 	  $reply_message = 'สาขาปากเกร็ด 5533'."\n"."สาขาแจ้งวัฒนะ 2533"."\n"."สาขาบางกอกน้อย 4533"."\n"."สาขาหนองแขม 3533";
   }
   if($event['message']['text'] == 'ปัญหาระบบคอมพิวเตอร์')
   {
-    $textReplyMessage = new BubbleContainerBuilder(
+    $actions = array (
+      // general message action
+      New \LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder("button 1", "text 1"),
+      // URL type action
+      New \LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder("Google", "http://www.google.com"),
+      // The following two are interactive actions
+      New \LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder("next page", "page=3"),
+      New \LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder("Previous", "page=1")
+    );
+    $img_url = "https://cdn.shopify.com/s/files/1/0379/7669/products/sampleset2_1024x1024.JPG?v=1458740363";
+    $button = new \LINE\LINEBot\MessageBuilder\TemplateBuilder\ButtonTemplateBuilder("button text", "description", $img_url, $actions);
+    $outputText = new \LINE\LINEBot\MessageBuilder\TemplateMessageBuilder("this message to use the phone to look to the Oh", $button);
+    /*$textReplyMessage = new BubbleContainerBuilder(
       "ltr",  // กำหนด NULL หรือ "ltr" หรือ "rtl"
       new BoxComponentBuilder(
           "vertical",
@@ -54,53 +80,7 @@ if ( sizeof($request_array['events']) > 0 )
           new BlockStyleBuilder("#FFF200") // style สำหรับ footer block
       )
   );
-  $replyData = new FlexMessageBuilder("Flex",$textReplyMessage);
+  $replyData = new FlexMessageBuilder("Flex",$textReplyMessage);*/
   }
-  /*if ( $event['type'] == 'message' ) 
-  {
-   if( $event['message']['type'] == 'text' )
-   {
-    $text = $event['message']['text'];
-    $reply_message = 'ระบบได้รับข้อความ ('.$text.') ของคุณแล้ว';
-   }
-   else
-    $reply_message = 'ระบบได้รับ '.ucfirst($event['message']['type']).' ของคุณแล้ว';
-  
-  }
-  else
-   $reply_message = 'ระบบได้รับ Event '.ucfirst($event['type']).' ของคุณแล้ว';*/
- 
-  if( strlen($reply_message) > 0 )
-  {
-   //$reply_message = iconv("tis-620","utf-8",$reply_message);
-   $data = [
-    'replyToken' => $reply_token,
-    'messages' => [['type' => 'text', 'text' => $reply_message]]
-   ];
-   $post_body = json_encode($data, JSON_UNESCAPED_UNICODE);
-
-   $send_result = send_reply_message($API_URL, $POST_HEADER, $post_body);
-   echo "Result: ".$send_result."\r\n";
-  }
- }
-}
-
-echo "OK";
-
-function send_reply_message($url, $post_header, $post_body)
-{
- $ch = curl_init($url);
- curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
- curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
- curl_setopt($ch, CURLOPT_HTTPHEADER, $post_header);
- curl_setopt($ch, CURLOPT_POSTFIELDS, $post_body);
- curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
- $result = curl_exec($ch);
- curl_close($ch);
-
- return $result;
-}
-
-?>
 
 ?>
