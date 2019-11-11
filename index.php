@@ -25,7 +25,6 @@ if (!is_null($events['events'])) {
 				'text' => $text
 
 			];
-			$userId = 'Uffa138efe037e6e889d0b0f4a871c005';
 
 			$url = 'https://api.line.me/v2/bot/profile/'.$userId;
 
