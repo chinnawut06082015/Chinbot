@@ -6,8 +6,8 @@ use Monolog\Handler\FirePHPHandler;
 $logger = new Logger('LineBot');
 $logger->pushHandler(new StreamHandler('php://stderr', Logger::DEBUG));
 
-$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($_ENV["LINEBOT_ACCESS_TOKEN"]);
-$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $_ENV["LINEBOT_CHANNEL_SECRET"]]);
+$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient($_ENV["PK22vMsinZQh0VWpwVlHnXCXiHfDoA+oGk1d0eaOaIRtPf6mEIDvRVprJ0e7o06eKjqa2B3TONZ9CkOP2og96CHl1v21hcmoB5mwZm1umzoHRy0zkyFPEC3kkwKXuO9IECWdEc0zz/3GMcoExpVy9gdB04t89/1O/w1cDnyilFU="]);
+$bot = new \LINE\LINEBot($httpClient, ['channelSecret' => $_ENV["3ac88d67a3c8f207a35717e4537f6f58"]]);
 
 $signature = $_SERVER['HTTP_' . \LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
 try {
@@ -21,17 +21,6 @@ try {
 } catch(\LINE\LINEBot\Exception\InvalidEventRequestException $e) {
 	error_log('parseEventRequest failed. InvalidEventRequestException => '.var_export($e, true));
 }
-
-	// Postback Event
-	if (($event instanceof \LINE\LINEBot\Event\PostbackEvent)) {
-		$logger->info('Postback message has come');
-		continue;
-	}
-	// Location Event
-	if  ($event instanceof LINE\LINEBot\Event\MessageEvent\LocationMessage) {
-		$logger->info("location -> ".$event->getLatitude().",".$event->getLongitude());
-		continue;
-	}
 
   if($event['message']['text'] == 'เบอร์ติดต่อแต่ละสาขา' )
   {
