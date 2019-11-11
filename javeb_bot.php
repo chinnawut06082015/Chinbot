@@ -1,4 +1,39 @@
 <?php
+
+use LINE\LINEBot;
+use LINE\LINEBot\HTTPClient;
+use LINE\LINEBot\HTTPClient\CurlHTTPClient;
+//use LINE\LINEBot\Event;
+//use LINE\LINEBot\Event\BaseEvent;
+//use LINE\LINEBot\Event\MessageEvent;
+use LINE\LINEBot\MessageBuilder;
+use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
+use LINE\LINEBot\MessageBuilder\StickerMessageBuilder;
+use LINE\LINEBot\MessageBuilder\ImageMessageBuilder;
+use LINE\LINEBot\MessageBuilder\LocationMessageBuilder;
+use LINE\LINEBot\MessageBuilder\AudioMessageBuilder;
+use LINE\LINEBot\MessageBuilder\VideoMessageBuilder;
+use LINE\LINEBot\ImagemapActionBuilder;
+use LINE\LINEBot\ImagemapActionBuilder\AreaBuilder;
+use LINE\LINEBot\ImagemapActionBuilder\ImagemapMessageActionBuilder ;
+use LINE\LINEBot\ImagemapActionBuilder\ImagemapUriActionBuilder;
+use LINE\LINEBot\MessageBuilder\Imagemap\BaseSizeBuilder;
+use LINE\LINEBot\MessageBuilder\ImagemapMessageBuilder;
+use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
+use LINE\LINEBot\TemplateActionBuilder;
+use LINE\LINEBot\TemplateActionBuilder\DatetimePickerTemplateActionBuilder;
+use LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder;
+use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
+use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ButtonTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselColumnTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ImageCarouselTemplateBuilder;
+use LINE\LINEBot\MessageBuilder\TemplateBuilder\ImageCarouselColumnTemplateBuilder;
+
 $API_URL = 'https://api.line.me/v2/bot/message/reply';
 $ACCESS_TOKEN = 'PK22vMsinZQh0VWpwVlHnXCXiHfDoA+oGk1d0eaOaIRtPf6mEIDvRVprJ0e7o06eKjqa2B3TONZ9CkOP2og96CHl1v21hcmoB5mwZm1umzoHRy0zkyFPEC3kkwKXuO9IECWdEc0zz/3GMcoExpVy9gdB04t89/1O/w1cDnyilFU='; // Access Token ค่าที่เราสร้างขึ้น
 $POST_HEADER = array('Content-Type: application/json', 'Authorization: Bearer ' . $ACCESS_TOKEN);
@@ -21,16 +56,35 @@ if ( sizeof($request_array['events']) > 0 )
   if($event['message']['text'] == 'ปัญหาระบบคอมพิวเตอร์')
   {
     $textReplyMessage = new BubbleContainerBuilder(
-      "ltr",NULL,NULL,
+      "ltr",  // กำหนด NULL หรือ "ltr" หรือ "rtl"
       new BoxComponentBuilder(
           "vertical",
           array(
-              new TextComponentBuilder("hello"),
-              new TextComponentBuilder("world")
+              new TextComponentBuilder("This is Header")
           )
+      ),
+      new ImageComponentBuilder(
+          "https://www.ninenik.com/images/ninenik_page_logo.png",NULL,NULL,NULL,NULL,"full","20:13","cover"),
+      new BoxComponentBuilder(
+          "vertical",
+          array(
+              new TextComponentBuilder("This is Body")
+          )
+      ),
+      new BoxComponentBuilder(
+          "vertical",
+          array(
+              new TextComponentBuilder("This is Footer")
+          )
+      ),
+      new BubbleStylesBuilder( // style ทั้งหมดของ bubble
+          new BlockStyleBuilder("#FFC90E"),  // style สำหรับ header block
+          new BlockStyleBuilder("#EFE4B0"), // style สำหรับ hero block
+          new BlockStyleBuilder("#B5E61D"), // style สำหรับ body block
+          new BlockStyleBuilder("#FFF200") // style สำหรับ footer block
       )
   );
-  $replyData = new FlexMessageBuilder("This is a Flex Message",$textReplyMessage);
+  $replyData = new FlexMessageBuilder("Flex",$textReplyMessage);
   }
   /*if ( $event['type'] == 'message' ) 
   {
