@@ -1,5 +1,8 @@
 <?php
 
+// include composer autoload
+require_once '../vendor/autoload.php';
+
 $API_URL = 'https://api.line.me/v2/bot/message/reply';
 $ACCESS_TOKEN = 'PK22vMsinZQh0VWpwVlHnXCXiHfDoA+oGk1d0eaOaIRtPf6mEIDvRVprJ0e7o06eKjqa2B3TONZ9CkOP2og96CHl1v21hcmoB5mwZm1umzoHRy0zkyFPEC3kkwKXuO9IECWdEc0zz/3GMcoExpVy9gdB04t89/1O/w1cDnyilFU='; // Access Token ค่าที่เราสร้างขึ้น
 $POST_HEADER = array('Content-Type: application/json', 'Authorization: Bearer ' . $ACCESS_TOKEN);
@@ -21,7 +24,17 @@ if ( sizeof($request_array['events']) > 0 )
   }
   if($event['message']['text'] == 'ปัญหาระบบคอมพิวเตอร์')
   {
-
+    $textReplyMessage = new BubbleContainerBuilder(
+      "ltr",NULL,NULL,
+      new BoxComponentBuilder(
+          "vertical",
+          array(
+              new TextComponentBuilder("hello"),
+              new TextComponentBuilder("world")
+          )
+      )
+  );
+  $replyData = new FlexMessageBuilder("This is a Flex Message",$textReplyMessage);
   }
   /*if ( $event['type'] == 'message' ) 
   {
