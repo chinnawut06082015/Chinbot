@@ -22,6 +22,8 @@
 </html>
 <?php
 
+// การตั้งเกี่ยวกับ bot
+require_once 'bot_settings.php';
 /*
 $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient('PK22vMsinZQh0VWpwVlHnXCXiHfDoA+oGk1d0eaOaIRtPf6mEIDvRVprJ0e7o06eKjqa2B3TONZ9CkOP2og96CHl1v21hcmoB5mwZm1umzoHRy0zkyFPEC3kkwKXuO9IECWdEc0zz/3GMcoExpVy9gdB04t89/1O/w1cDnyilFU=');
 $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => '3ac88d67a3c8f207a35717e4537f6f58']);*/
@@ -32,7 +34,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
  
 // include composer autoload
-require_once '../vendor/autoload.php';
+require_once '/vendor/autoload.php';
  
 // กรณีมีการเชื่อมต่อกับฐานข้อมูล
 //require_once("dbconnect.php");
@@ -73,8 +75,8 @@ use LINE\LINEBot\MessageBuilder\TemplateBuilder\ImageCarouselTemplateBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\ImageCarouselColumnTemplateBuilder;
  
 // เชื่อมต่อกับ LINE Messaging API
-$httpClient = new CurlHTTPClient('PK22vMsinZQh0VWpwVlHnXCXiHfDoA+oGk1d0eaOaIRtPf6mEIDvRVprJ0e7o06eKjqa2B3TONZ9CkOP2og96CHl1v21hcmoB5mwZm1umzoHRy0zkyFPEC3kkwKXuO9IECWdEc0zz/3GMcoExpVy9gdB04t89/1O/w1cDnyilFU=');
-$bot = new LINEBot($httpClient, array('channelSecret' => '3ac88d67a3c8f207a35717e4537f6f58'));
+$httpClient = new CurlHTTPClient(LINE_MESSAGE_ACCESS_TOKEN);
+$bot = new LINEBot($httpClient, array('channelSecret' => LINE_MESSAGE_CHANNEL_SECRET));
  
 // คำสั่งรอรับการส่งค่ามาของ LINE Messaging API
 $content = file_get_contents('php://input');
