@@ -1,27 +1,4 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-	<head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>Test pare</title>
-		<meta name="description" content="">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="">
-	</head>
-	<body>
-
-		<!--[if lt IE 7]>
-			<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-		<![endif]-->
-		
-		<script src="" async defer></script>
-	</body>
-</html>
 <?php
-
 // การตั้งเกี่ยวกับ bot
 require_once 'bot_settings.php';
 /*
@@ -40,8 +17,8 @@ require_once '/vendor/autoload.php';
 //require_once("dbconnect.php");
  
 // เชื่อมต่อกับ LINE Messaging API
-$httpClient = new CurlHTTPClient(LINE_MESSAGE_ACCESS_TOKEN);
-$bot = new LINEBot($httpClient, array('channelSecret' => LINE_MESSAGE_CHANNEL_SECRET));
+$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(LINE_MESSAGE_ACCESS_TOKEN);
+$bot = new \LINE\LINEBot($httpClient,['channelSecret' => LINE_MESSAGE_CHANNEL_SECRET]);
  
 $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder('hello');
 $response = $bot->replyMessage('<replyToken>', $textMessageBuilder);
@@ -66,8 +43,6 @@ if ($response->isSucceeded()) {
     echo 'Succeeded!';
     return;
 }*/
- 
 // Failed
 echo $response->getHTTPStatus() . ' ' . $response->getRawBody();
-
 ?>
