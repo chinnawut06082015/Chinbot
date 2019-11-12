@@ -6,7 +6,7 @@ $httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient('PK22vMsinZQh0VWpwVlHn
 $bot = new \LINE\LINEBot($httpClient, ['channelSecret' => '3ac88d67a3c8f207a35717e4537f6f58']);*/
  
 // include composer autoload
-require_once '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 // กรณีมีการเชื่อมต่อกับฐานข้อมูล
 //require_once("dbconnect.php");
