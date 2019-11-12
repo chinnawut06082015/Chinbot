@@ -17,11 +17,8 @@ require_once '/vendor/autoload.php';
 //require_once("dbconnect.php");
  
 // เชื่อมต่อกับ LINE Messaging API
-$httpClient = new \LINE\LINEBot\HTTPClient\CurlHTTPClient(LINE_MESSAGE_ACCESS_TOKEN);
-$bot = new \LINE\LINEBot($httpClient,['channelSecret' => LINE_MESSAGE_CHANNEL_SECRET]);
- 
 $textMessageBuilder = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder('hello');
-$response = $bot->replyMessage('<replyToken>', $textMessageBuilder);
+$response = $bot->pushMessage('<to>', $textMessageBuilder);
 
 echo $response->getHTTPStatus() . ' ' . $response->getRawBody();
 /*
